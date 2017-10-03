@@ -2,6 +2,8 @@
 
 package lesson3.task1
 
+import lesson1.task1.sqr
+
 /**
  * Пример
  *
@@ -103,7 +105,7 @@ fun lcm(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var l=2
+    var l = 2
     for (i in 2..n) {
         if (n % i == 0) break
         l++
@@ -117,8 +119,8 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var l=n-1
-    for (i in n-1 downTo 1) {
+    var l = n - 1
+    for (i in n - 1 downTo 1) {
         if (n % i == 0) break
         l--
     }
@@ -132,7 +134,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean  {
+fun isCoPrime(m: Int, n: Int): Boolean {
     var k = 1
     for (i in 2..m) {
         k++
@@ -148,7 +150,12 @@ fun isCoPrime(m: Int, n: Int): Boolean  {
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    for (k: Int in 0..n) {
+        if (sqr(k.toDouble()) >= m && sqr(k.toDouble()) <= n) return true
+    }
+    return false
+}
 
 /**
  * Средняя
@@ -200,7 +207,15 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * 149162536496481100121144...
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var k = 0.0
+    var count = 0.0
+    while (n > k) {
+        count++
+        k += digitNumber(sqr(count).toInt())
+    }
+    return (sqr(count) / Math.pow(10.0, (k - n))).toInt() % 10
+}
 
 /**
  * Сложная
