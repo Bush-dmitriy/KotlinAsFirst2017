@@ -3,6 +3,7 @@
 package lesson3.task1
 
 import lesson1.task1.sqr
+import java.lang.Math.*
 
 /**
  * Пример
@@ -82,7 +83,8 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int =
-        if (n <= 2) 1 else ((Math.pow(((Math.sqrt(5.0) + 1) / 2), n.toDouble()) / Math.sqrt(5.0)) + 0.5).toInt()
+        if (n <= 2) 1 else
+            ((pow(((sqrt(5.0) + 1) / 2), n.toDouble()) / sqrt(5.0)) + 0.5).toInt()
 
 //Нахождение Наибольшего Общего делителя//
 fun nod(a: Int, b: Int): Int {
@@ -94,7 +96,7 @@ fun nod(a: Int, b: Int): Int {
         else
             l %= k
     }
-    return (k + l)
+    return k + l
 }
 
 /**
@@ -111,13 +113,10 @@ fun lcm(m: Int, n: Int): Int = m * n / nod(m, n)
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var l = 2
-    if (n == l) return n
-    else for (i in 2..n / 2) {
-        if (n % i == 0) break
-        l++
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
+        if (n % i == 0) return i
     }
-    return if (l > n / 2) n else l
+    return n
 }
 
 /**
@@ -125,14 +124,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var l = n / 2
-    for (i in n / 2 downTo 1) {
-        if (n % i == 0) break
-        l--
-    }
-    return l
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -143,7 +135,7 @@ fun maxDivisor(n: Int): Int {
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     val l = nod(m, n)
-    return (l == 1)
+    return l == 1
 }
 
 /**
@@ -154,10 +146,8 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    for (k in Math.sqrt(m.toDouble()).toInt()..Math.sqrt(n.toDouble()).toInt()) {
-        if (sqr(k.toDouble()) >= m && sqr(k.toDouble()) <= n) return true
-    }
-    return false
+    val l = sqrt(n.toDouble()).toInt()
+    return (sqr(l.toDouble()) <= n && sqr(l.toDouble()) >= m)
 }
 
 /**
@@ -169,18 +159,21 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var n = x
-    while (Math.abs(n) > 2 * Math.PI) {
+    while (n > 2 * Math.PI) {
         n -= 2 * Math.PI
     }
+    while (n < -2 * Math.PI) {
+        n += 2 * Math.PI
+    }
     var l = 0.0
-    var count1 = 2.0
-    var count2 = 1.0
+    var countNegative = 2.0
+    var count = 1.0
     do {
-        val part1 = Math.pow(-1.0, count1) * Math.pow(n, count2) / factorial(count2.toInt())
+        val part1 = pow(-1.0, countNegative) * pow(n, count) / factorial(count.toInt())
         l += part1
-        count1++
-        count2 += 2
-    } while (Math.abs(part1) >= eps)
+        countNegative++
+        count += 2
+    } while (abs(part1) >= eps)
     return l
 }
 
@@ -193,18 +186,21 @@ fun sin(x: Double, eps: Double): Double {
  */
 fun cos(x: Double, eps: Double): Double {
     var n = x
-    while (Math.abs(n) > 2 * Math.PI) {
-        n -= 2 * Math.PI
+    while (n > 2 * PI) {
+        n -= 2 * PI
+    }
+    while (n < -2 * PI) {
+        n += 2 * PI
     }
     var l = 0.0
-    var count1 = 2.0
-    var count2 = 0.0
+    var countNegative = 2.0
+    var count = 0.0
     do {
-        val part1 = Math.pow(-1.0, count1) * Math.pow(n, count2) / factorial(count2.toInt())
+        val part1 = pow(-1.0, countNegative) * pow(n, count) / factorial(count.toInt())
         l += part1
-        count1++
-        count2 += 2
-    } while (Math.abs(part1) >= eps)
+        countNegative++
+        count += 2
+    } while (abs(part1) >= eps)
     return l
 }
 
@@ -215,11 +211,10 @@ fun cos(x: Double, eps: Double): Double {
  * Не использовать строки при решении задачи.
  */
 fun revert(n: Int): Int {
-    val digNubm = digitNumber(n)
     var result = 0
     var degree = 1
-    for (i in digNubm - 1 downTo 0) {
-        result += (n / Math.pow(10.0, i.toDouble()).toInt()) % 10 * degree
+    for (i in digitNumber(n) - 1 downTo 0) {
+        result += (n / pow(10.0, i.toDouble()).toInt()) % 10 * degree
         degree *= 10
     }
     return result
@@ -232,16 +227,7 @@ fun revert(n: Int): Int {
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int): Boolean {
-    val digNubm = digitNumber(n)
-    var result = 0
-    var degree = 1
-    for (i in digNubm - 1 downTo 0) {
-        result += (n / Math.pow(10.0, i.toDouble()).toInt()) % 10 * degree
-        degree *= 10
-    }
-    return n == result
-}
+fun isPalindrome(n: Int): Boolean = revert(n) == n
 
 /**
  * Средняя
@@ -250,10 +236,9 @@ fun isPalindrome(n: Int): Boolean {
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    val digNumb = digitNumber(n)
-    val k = n % 10
-    for (i in 1 until digNumb) {
-        if (n / Math.pow(10.0, i.toDouble()).toInt() % 10 != k) return true
+    val lastDigit = n % 10
+    for (i in 1 until digitNumber(n)) {
+        if (n / pow(10.0, i.toDouble()).toInt() % 10 != lastDigit) return true
     }
     return false
 }
@@ -272,7 +257,7 @@ fun squareSequenceDigit(n: Int): Int {
         count++
         k += digitNumber(sqr(count).toInt())
     }
-    return (sqr(count) / Math.pow(10.0, (k - n))).toInt() % 10
+    return (sqr(count) / pow(10.0, (k - n))).toInt() % 10
 }
 
 /**
@@ -289,5 +274,5 @@ fun fibSequenceDigit(n: Int): Int {
         count++
         k += digitNumber(fib(count))
     }
-    return (fib(count) / Math.pow(10.0, (k - n))).toInt() % 10
+    return (fib(count) / pow(10.0, (k - n))).toInt() % 10
 }
