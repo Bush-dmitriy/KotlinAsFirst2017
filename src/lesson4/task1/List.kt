@@ -137,7 +137,6 @@ fun center(list: MutableList<Double>): MutableList<Double> {
     }
     return list
 }
-//Я не совсем понимаю, почему это не работает. Я же обязан менять список, разве нет?//
 
 /**
  * Средняя
