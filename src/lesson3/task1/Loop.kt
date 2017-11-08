@@ -113,7 +113,7 @@ fun lcm(m: Int, n: Int): Int = m * n / nod(m, n)
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..sqrt(n.toDouble()).toInt()) {
+    for (i in 2..sqrt(floor(n.toDouble())).toInt()) {
         if (n % i == 0) return i
     }
     return n
@@ -133,10 +133,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    val l = nod(m, n)
-    return l == 1
-}
+fun isCoPrime(m: Int, n: Int): Boolean = nod(m, n) == 1
 
 /**
  * Простая
@@ -146,8 +143,8 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    val l = sqrt(n.toDouble()).toInt()
-    return (sqr(l.toDouble()) <= n && sqr(l.toDouble()) >= m)
+    val l = sqrt(floor(n.toDouble())).toInt()
+    return sqr(l.toDouble()) >= m
 }
 
 /**
@@ -159,11 +156,11 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var n = x
-    while (n > 2 * Math.PI) {
-        n -= 2 * Math.PI
+    while (n > 2 * PI) {
+        n -= 2 * PI
     }
-    while (n < -2 * Math.PI) {
-        n += 2 * Math.PI
+    while (n < -2 * PI) {
+        n += 2 * PI
     }
     var l = 0.0
     var countNegative = 2.0
@@ -184,26 +181,7 @@ fun sin(x: Double, eps: Double): Double {
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double {
-    var n = x
-    while (n > 2 * PI) {
-        n -= 2 * PI
-    }
-    while (n < -2 * PI) {
-        n += 2 * PI
-    }
-    var l = 0.0
-    var countNegative = 2.0
-    var count = 0.0
-    do {
-        val part1 = pow(-1.0, countNegative) * pow(n, count) / factorial(count.toInt())
-        l += part1
-        countNegative++
-        count += 2
-    } while (abs(part1) >= eps)
-    return l
-}
-
+fun cos(x: Double, eps: Double): Double = sin(x+PI/2, eps)
 /**
  * Средняя
  *
