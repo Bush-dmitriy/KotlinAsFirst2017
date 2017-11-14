@@ -283,15 +283,16 @@ fun decimalFromString(str: String, base: Int): Int {
     return decimal(result, base)
 }
 
-fun addition(k: Int, i: Int, a: String, b: String, c: String, result: MutableList<String>): Int {
-    var l = k
-    if (k / pow(10.0, digitNumber(k) - 1.toDouble()).toInt() == i) {
-        result.add(when (digitNumber(k)) {
-            3 -> a
-            2 -> b
-            else -> c
+//
+fun addition(x: Int, i: Int, hundreds: String, dozens: String, units: String, result: MutableList<String>): Int {
+    var l = x
+    if (x / pow(10.0, digitNumber(x) - 1.toDouble()).toInt() == i) {
+        result.add(when (digitNumber(x)) {
+            3 -> hundreds
+            2 -> dozens
+            else -> units
         })
-        l -= i * pow(10.0, digitNumber(k) - 1.toDouble()).toInt()
+        l -= i * pow(10.0, digitNumber(x) - 1.toDouble()).toInt()
     }
     return l
 }
@@ -307,22 +308,22 @@ fun addition(k: Int, i: Int, a: String, b: String, c: String, result: MutableLis
 
 
 fun roman(n: Int): String {
-    var k = n
+    var x = n
     val result = mutableListOf<String>()
-    while (k >= 1000) {
-        k -= 1000
+    while (x >= 1000) {
+        x -= 1000
         result.add("M")
     }
-    while (k > 0) {
-        k = addition(k, 9, "CM", "XC", "IX", result)
-        k = addition(k, 5, "D", "L", "V", result)
-        k = addition(k, 1, "C", "X", "I", result)
-        k = addition(k, 2, "C", "X", "I", result)
-        k = addition(k, 3, "C", "X", "I", result)
-        k = addition(k, 4, "CD", "XL", "IV", result)
-        k = addition(k, 6, "DC", "LX", "VI", result)
-        k = addition(k, 7, "DCC", "LXX", "VII", result)
-        k = addition(k, 8, "DCCC", "LXXX", "VIII", result)
+    while (x > 0) {
+        x = addition(x, 9, "CM", "XC", "IX", result)
+        x = addition(x, 5, "D", "L", "V", result)
+        x = addition(x, 1, "C", "X", "I", result)
+        x = addition(x, 2, "C", "X", "I", result)
+        x = addition(x, 3, "C", "X", "I", result)
+        x = addition(x, 4, "CD", "XL", "IV", result)
+        x = addition(x, 6, "DC", "LX", "VI", result)
+        x = addition(x, 7, "DCC", "LXX", "VII", result)
+        x = addition(x, 8, "DCCC", "LXXX", "VIII", result)
     }
     return result.joinToString().filter { it != ' ' && it != ',' }
 }
