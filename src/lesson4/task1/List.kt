@@ -3,6 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson3.task1.digitNumber
 import lesson3.task1.minDivisor
 import java.lang.Math.*
 
@@ -110,8 +111,8 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * Модуль пустого вектора считать равным 0.0.
  */
 fun abs(v: List<Double>): Double {
-    val sqr = v.map { it * it }
-    return sqrt(sqr.sum())
+    val SqrList = v.map { it * it }
+    return sqrt(SqrList.sum())
 }
 
 /**
@@ -147,11 +148,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  */
 fun times(a: List<Double>, b: List<Double>): Double {
     var result = 0.0
-    return if (a.isEmpty() && b.isEmpty()) 0.0
-    else {
-        for (i in 0 until a.size) result += a[i] * b[i]
-        result
-    }
+    for (i in 0 until a.size) result += a[i] * b[i]
+    return result
 }
 
 /**
@@ -197,7 +195,7 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    val result: MutableList<Int> = mutableListOf()
+    val result = mutableListOf<Int>()
     var j = n
     while (j > 1) {
         result.add(minDivisor(j))
@@ -223,8 +221,9 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
 fun convert(n: Int, base: Int): List<Int> {
+    if (n == 0) return listOf(0)
     var j = n
-    val result: MutableList<Int> = mutableListOf()
+    val result = mutableListOf<Int>()
     while (j > 0) {
         result.add(0, j % base)
         j /= base
@@ -242,13 +241,12 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val list = convert(n, base)
-    val abc = "abcdefghijklmnopqrstuvwxyz"
-    var result = ""
+    val result = StringBuilder()
     for (i in 0 until list.size) {
-        result += if (list[i] > 9) abc[list[i] - 10]
-        else list[i]
+        if (list[i] > 9) result.append('a' + (list[i] - 10))
+        else result.append(list[i])
     }
-    return result
+    return result.toString()
 }
 
 /**
@@ -258,7 +256,13 @@ fun convertToString(n: Int, base: Int): String {
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    var result = 0.0
+    for (i in 0 until digits.size) {
+        result += digits[i] * pow(base.toDouble(), digits.size - i - 1.toDouble())
+    }
+    return result.toInt()
+}
 
 
 /**
@@ -270,7 +274,27 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    var result = listOf<Int>()
+    for (i in 0 until str.length) {
+        result += if (str[i] - 'a' > 0) ((str[i] - 'a') + 10)
+        else (str[i] - '0')
+    }
+    return decimal(result, base)
+}
+
+fun addition(k: Int, i: Int, a: String, b: String, c: String, result: MutableList<String>): Int {
+    var l = k
+    if (k / pow(10.0, digitNumber(k) - 1.toDouble()).toInt() == i) {
+        result.add(when (digitNumber(k)) {
+            3 -> a
+            2 -> b
+            else -> c
+        })
+        l -= i * pow(10.0, digitNumber(k) - 1.toDouble()).toInt()
+    }
+    return l
+}
 
 /**
  * Сложная
@@ -280,7 +304,29 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+
+
+fun roman(n: Int): String {
+    var k = n
+    val result = mutableListOf<String>()
+    while (k >= 1000) {
+        k -= 1000
+        result.add("M")
+    }
+    while (k > 0) {
+        k = addition(k, 9, "CM", "XC", "IX", result)
+        k = addition(k, 5, "D", "L", "V", result)
+        k = addition(k, 1, "C", "X", "I", result)
+        k = addition(k, 2, "C", "X", "I", result)
+        k = addition(k, 3, "C", "X", "I", result)
+        k = addition(k, 4, "CD", "XL", "IV", result)
+        k = addition(k, 6, "DC", "LX", "VI", result)
+        k = addition(k, 7, "DCC", "LXX", "VII", result)
+        k = addition(k, 8, "DCCC", "LXXX", "VIII", result)
+    }
+    return result.joinToString().filter { it != ' ' && it != ',' }
+}
+
 
 /**
  * Очень сложная
