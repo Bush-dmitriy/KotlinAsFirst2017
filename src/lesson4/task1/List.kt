@@ -336,4 +336,39 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val numbers = mutableListOf("", "один  ", "два ", "три ", "четыре ", "пять ",
+            "шесть ", "семь ", "восемь ", "девять ")
+    val decimals1 = listOf("десять ", "одиннадцать ", "двенадцать ", "тринадцать ", "четырнадцать ", "пятнадцать ",
+            "шестнадцать ", "семнадцать ", "восемнадцать ", "девятнадцать ")
+    val decimals2 = listOf("", "", "двадцать ", "тридцать ", "сорок ", "пятьдесят ", "шестьдесят ",
+            "семьдесят ", "восемьдесят ", "девяносто ")
+    val hundreds = listOf("", "сто ", "двести ", "триста ", "четыреста ", "пятьсот ",
+            "шестьсот ", "семьсот ", "восемьсот ", "девятьсот ")
+    val resultHundreds = StringBuilder()
+    val numberHundreds = n % 1000
+    resultHundreds.append(hundreds[numberHundreds / 100])
+    if (numberHundreds % 100 in 10..19) resultHundreds.append(decimals1[numberHundreds % 10])
+    else {
+        resultHundreds.append(decimals2[numberHundreds % 100 / 10])
+        resultHundreds.append(numbers[numberHundreds % 10])
+    }
+
+    val numberThousands = n / 1000
+    val resultThousands = StringBuilder()
+    numbers[1] = "одна "
+    numbers[2] = "две "
+    resultThousands.append(hundreds[numberThousands / 100])
+    if (numberThousands % 100 in 10..19) resultThousands.append(decimals1[numberThousands % 10])
+    else {
+        resultThousands.append(decimals2[numberThousands % 100 / 10])
+        resultThousands.append(numbers[numberThousands % 10])
+    }
+    when {
+        numberThousands % 100 in 10..19 && numberThousands % 10 in 5..9 -> resultThousands.append("тысяч ")
+        numberThousands % 10 == 1 -> resultThousands.append("тысяча ")
+        numberThousands % 10 in 2..4 -> resultThousands.append("тысячи ")
+        numberThousands != 0 -> resultThousands.append("тысяч ")
+    }
+    return resultThousands.append(resultHundreds).toString().trim()
+}
