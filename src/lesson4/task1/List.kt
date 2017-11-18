@@ -277,7 +277,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     var result = listOf<Int>()
     for (i in 0 until str.length) {
-        result += if (str[i] - 'a' > 0) ((str[i] - 'a') + 10)
+        result += if (str[i] - 'a' >= 0) ((str[i] - 'a') + 10)
         else (str[i] - '0')
     }
     return decimal(result, base)
@@ -318,8 +318,8 @@ fun roman(n: Int): String {
         x = addition(x, 9, "CM", "XC", "IX", result)
         x = addition(x, 5, "D", "L", "V", result)
         x = addition(x, 1, "C", "X", "I", result)
-        x = addition(x, 2, "C", "X", "I", result)
-        x = addition(x, 3, "C", "X", "I", result)
+        x = addition(x, 2, "CC", "XX", "II", result)
+        x = addition(x, 3, "CCC", "XXX", "III", result)
         x = addition(x, 4, "CD", "XL", "IV", result)
         x = addition(x, 6, "DC", "LX", "VI", result)
         x = addition(x, 7, "DCC", "LXX", "VII", result)
@@ -365,7 +365,7 @@ fun russian(n: Int): String {
         resultThousands.append(numbers[numberThousands % 10])
     }
     when {
-        numberThousands % 100 in 10..19 && numberThousands % 10 in 5..9 -> resultThousands.append("тысяч ")
+        numberThousands % 100 in 10..19 || numberThousands % 10 in 5..9 -> resultThousands.append("тысяч ")
         numberThousands % 10 == 1 -> resultThousands.append("тысяча ")
         numberThousands % 10 in 2..4 -> resultThousands.append("тысячи ")
         numberThousands != 0 -> resultThousands.append("тысяч ")
