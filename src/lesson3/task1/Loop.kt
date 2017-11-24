@@ -68,6 +68,7 @@ fun digitNumber(n: Int): Int {
     return if (n == 0) 1 else {
         var result = 0
         var k = n
+        // Не совсем понимаю, что от меня требуется. != исправляет мою первоначальную ошибку, разве нет?
         while (k != 0) {
             k /= 10
             result++
@@ -86,7 +87,7 @@ fun fib(n: Int): Int =
         if (n <= 2) 1 else
             ((pow(((sqrt(5.0) + 1) / 2), n.toDouble()) / sqrt(5.0)) + 0.5).toInt()
 
-//Нахождение Наибольшего Общего делителя//
+//Нахождение Наибольшего Общего делителя
 fun nod(a: Int, b: Int): Int {
     var k = a
     var l = b
@@ -113,7 +114,7 @@ fun lcm(m: Int, n: Int): Int = m * n / nod(m, n)
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..sqrt(floor(n.toDouble())).toInt()) {
+    for (i in 2..floor(sqrt(n.toDouble())).toInt()) {
         if (n % i == 0) return i
     }
     return n
@@ -142,10 +143,8 @@ fun isCoPrime(m: Int, n: Int): Boolean = nod(m, n) == 1
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean {
-    val l = sqrt(floor(n.toDouble())).toInt()
-    return sqr(l.toDouble()) >= m
-}
+fun squareBetweenExists(m: Int, n: Int): Boolean =
+        sqr(floor(sqrt(n.toDouble()))) >= m
 
 /**
  * Средняя

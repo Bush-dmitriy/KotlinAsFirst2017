@@ -110,10 +110,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    val SqrList = v.map { it * it }
-    return sqrt(SqrList.sum())
-}
+fun abs(v: List<Double>): Double = sqrt(v.map { it * it }.sum())
 
 /**
  * Простая
@@ -179,10 +176,8 @@ fun polynom(p: List<Double>, x: Double): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
-    var sum = 0.0
-    for (i in 0 until list.size) {
-        sum += list[i]
-        list[i] = sum
+    for (i in 1 until list.size) {
+        list[i] += list[i - 1]
     }
     return list
 }
@@ -225,10 +220,10 @@ fun convert(n: Int, base: Int): List<Int> {
     var j = n
     val result = mutableListOf<Int>()
     while (j > 0) {
-        result.add(0, j % base)
+        result.add(j % base)
         j /= base
     }
-    return result
+    return result.asReversed()
 }
 
 /**
@@ -283,20 +278,6 @@ fun decimalFromString(str: String, base: Int): Int {
     return decimal(result, base)
 }
 
-//
-fun addition(x: Int, i: Int, hundreds: String, dozens: String, units: String, result: MutableList<String>): Int {
-    var l = x
-    if (x / pow(10.0, digitNumber(x) - 1.toDouble()).toInt() == i) {
-        result.add(when (digitNumber(x)) {
-            3 -> hundreds
-            2 -> dozens
-            else -> units
-        })
-        l -= i * pow(10.0, digitNumber(x) - 1.toDouble()).toInt()
-    }
-    return l
-}
-
 /**
  * Сложная
  *
@@ -310,24 +291,37 @@ fun addition(x: Int, i: Int, hundreds: String, dozens: String, units: String, re
 fun roman(n: Int): String {
     var x = n
     val result = mutableListOf<String>()
+    val hundreds = listOf("C", "CC", "CCC","CD","D","DC","DCC","DCCC","CM")
+    val dozens = listOf("X","XX","XXX","XL","L","LX","LXX","LXXX","XC")
+    val units = listOf("I","II","III","IV","V","VI","VII","VIII","IX")
     while (x >= 1000) {
         x -= 1000
         result.add("M")
     }
     while (x > 0) {
-        x = addition(x, 9, "CM", "XC", "IX", result)
-        x = addition(x, 5, "D", "L", "V", result)
-        x = addition(x, 1, "C", "X", "I", result)
-        x = addition(x, 2, "CC", "XX", "II", result)
-        x = addition(x, 3, "CCC", "XXX", "III", result)
-        x = addition(x, 4, "CD", "XL", "IV", result)
-        x = addition(x, 6, "DC", "LX", "VI", result)
-        x = addition(x, 7, "DCC", "LXX", "VII", result)
-        x = addition(x, 8, "DCCC", "LXXX", "VIII", result)
+        for (i in 9 downTo 1)
+            if (x / pow(10.0, digitNumber(x) - 1.toDouble()).toInt() == i) {
+                result.add(when (digitNumber(x)) {
+                    3 -> hundreds[i-1]
+                    2 -> dozens[i-1]
+                    else -> units[i-1]
+                })
+                x -= i * pow(10.0, digitNumber(x) - 1.toDouble()).toInt()
+            }
     }
     return result.joinToString().filter { it != ' ' && it != ',' }
 }
 
+//Помощь к russian
+fun help(number: Int, result: StringBuilder, numbers: MutableList<String>,
+         decimals1: List<String>, decimals2: List<String>, hundreds: List<String>) {
+    result.append(hundreds[number / 100])
+    if (number % 100 in 10..19) result.append(decimals1[number % 10])
+    else {
+        result.append(decimals2[number % 100 / 10])
+        result.append(numbers[number % 10])
+    }
+}
 
 /**
  * Очень сложная
@@ -345,25 +339,19 @@ fun russian(n: Int): String {
             "семьдесят ", "восемьдесят ", "девяносто ")
     val hundreds = listOf("", "сто ", "двести ", "триста ", "четыреста ", "пятьсот ",
             "шестьсот ", "семьсот ", "восемьсот ", "девятьсот ")
-    val resultHundreds = StringBuilder()
+
     val numberHundreds = n % 1000
-    resultHundreds.append(hundreds[numberHundreds / 100])
-    if (numberHundreds % 100 in 10..19) resultHundreds.append(decimals1[numberHundreds % 10])
-    else {
-        resultHundreds.append(decimals2[numberHundreds % 100 / 10])
-        resultHundreds.append(numbers[numberHundreds % 10])
-    }
+    val resultHundreds = StringBuilder()
+    help(numberHundreds, resultHundreds, numbers,
+    decimals1, decimals2, hundreds)
 
     val numberThousands = n / 1000
     val resultThousands = StringBuilder()
     numbers[1] = "одна "
     numbers[2] = "две "
-    resultThousands.append(hundreds[numberThousands / 100])
-    if (numberThousands % 100 in 10..19) resultThousands.append(decimals1[numberThousands % 10])
-    else {
-        resultThousands.append(decimals2[numberThousands % 100 / 10])
-        resultThousands.append(numbers[numberThousands % 10])
-    }
+    help(numberThousands, resultThousands, numbers,
+            decimals1, decimals2, hundreds)
+
     when {
         numberThousands % 100 in 10..19 || numberThousands % 10 in 5..9 -> resultThousands.append("тысяч ")
         numberThousands % 10 == 1 -> resultThousands.append("тысяча ")
