@@ -291,9 +291,9 @@ fun decimalFromString(str: String, base: Int): Int {
 fun roman(n: Int): String {
     var x = n
     val result = mutableListOf<String>()
-    val hundreds = listOf("C", "CC", "CCC","CD","D","DC","DCC","DCCC","CM")
-    val dozens = listOf("X","XX","XXX","XL","L","LX","LXX","LXXX","XC")
-    val units = listOf("I","II","III","IV","V","VI","VII","VIII","IX")
+    val hundreds = listOf("C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM")
+    val dozens = listOf("X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC")
+    val units = listOf("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX")
     while (x >= 1000) {
         x -= 1000
         result.add("M")
@@ -302,14 +302,14 @@ fun roman(n: Int): String {
         for (i in 9 downTo 1)
             if (x / pow(10.0, digitNumber(x) - 1.toDouble()).toInt() == i) {
                 result.add(when (digitNumber(x)) {
-                    3 -> hundreds[i-1]
-                    2 -> dozens[i-1]
-                    else -> units[i-1]
+                    3 -> hundreds[i - 1]
+                    2 -> dozens[i - 1]
+                    else -> units[i - 1]
                 })
                 x -= i * pow(10.0, digitNumber(x) - 1.toDouble()).toInt()
             }
     }
-    return result.joinToString().filter { it != ' ' && it != ',' }
+    return result.joinToString(separator = "")
 }
 
 //Помощь к russian
@@ -343,7 +343,7 @@ fun russian(n: Int): String {
     val numberHundreds = n % 1000
     val resultHundreds = StringBuilder()
     help(numberHundreds, resultHundreds, numbers,
-    decimals1, decimals2, hundreds)
+            decimals1, decimals2, hundreds)
 
     val numberThousands = n / 1000
     val resultThousands = StringBuilder()
@@ -353,10 +353,11 @@ fun russian(n: Int): String {
             decimals1, decimals2, hundreds)
 
     when {
-        numberThousands % 100 in 10..19 || numberThousands % 10 in 5..9 -> resultThousands.append("тысяч ")
         numberThousands % 10 == 1 -> resultThousands.append("тысяча ")
         numberThousands % 10 in 2..4 -> resultThousands.append("тысячи ")
-        numberThousands != 0 -> resultThousands.append("тысяч ")
+        numberThousands % 100 in 10..19 ||
+                numberThousands % 10 in 5..9 ||
+                numberThousands != 0 -> resultThousands.append("тысяч ")
     }
     return resultThousands.append(resultHundreds).toString().trim()
 }

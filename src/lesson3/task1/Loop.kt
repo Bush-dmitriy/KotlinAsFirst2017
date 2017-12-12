@@ -68,7 +68,6 @@ fun digitNumber(n: Int): Int {
     return if (n == 0) 1 else {
         var result = 0
         var k = n
-        // Не совсем понимаю, что от меня требуется. != исправляет мою первоначальную ошибку, разве нет?
         while (k != 0) {
             k /= 10
             result++
