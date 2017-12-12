@@ -114,11 +114,11 @@ fun dateDigitToStr(digital: String): String {
  */
 fun flattenPhoneNumber(phone: String): String {
     val phoneFilter = phone.filter { it != ' ' && it != '(' && it != ')' && it != '-' }
-    val matchResult = Regex("""[^[0-9]+]""").find(phone)
-    val matchResult2 = Regex("""[0-9]""").find(phone)
-    return if (matchResult == null || matchResult2 != null)
-        phoneFilter
-    else ""
+    val matchResult = Regex("""([^0-9+])""").find(phoneFilter)
+    val matchResult2 = Regex("""([0-9])""").find(phoneFilter)
+    return if (matchResult != null || matchResult2 == null)
+        ""
+    else phoneFilter
 }
 
 /**
@@ -183,15 +183,16 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     if (expression == "") throw IllegalArgumentException()
+    if (Regex("""([^-0-9+ ])""").find(expression) != null) throw IllegalArgumentException()
     val listOfSymbols = Regex("""\s+""").split(expression)
-    if (Regex("""[^0-9]""").find(listOfSymbols[0]) != null) throw IllegalArgumentException()
     if (listOfSymbols.size == 1) return listOfSymbols[0].toInt()
+    if (listOfSymbols[0] == "") throw IllegalArgumentException()
     var result = listOfSymbols[0].toInt()
     for (i in 0 until listOfSymbols.size step 2) {
         when {
             i + 1 >= listOfSymbols.size -> return result
-            Regex("""[^-+]""").find(listOfSymbols[i + 1]) != null -> throw IllegalArgumentException()
-            Regex("""[^0-9]""").find(listOfSymbols[i + 2]) != null -> throw IllegalArgumentException()
+            Regex("""([^-+])""").find(listOfSymbols[i + 1]) != null -> throw IllegalArgumentException()
+            Regex("""([^0-9])""").find(listOfSymbols[i + 2]) != null -> throw IllegalArgumentException()
             listOfSymbols[i + 1] == "+" -> result += listOfSymbols[i + 2].toInt()
             listOfSymbols[i + 1] == "-" -> result -= listOfSymbols[i + 2].toInt()
         }
@@ -212,7 +213,7 @@ fun firstDuplicateIndex(str: String): Int {
     val words = str.split(" ")
     if (words.size == 1) return -1
     var result = 0
-    for (i in 0 until words.size-1) {
+    for (i in 0 until words.size - 1) {
         if (words[i].toLowerCase() == words[i + 1].toLowerCase())
             return result + i
         else result += words[i].length
