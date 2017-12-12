@@ -353,11 +353,9 @@ fun russian(n: Int): String {
             decimals1, decimals2, hundreds)
 
     when {
-        numberThousands % 10 == 1 -> resultThousands.append("тысяча ")
-        numberThousands % 10 in 2..4 -> resultThousands.append("тысячи ")
-        numberThousands % 100 in 10..19 ||
-                numberThousands % 10 in 5..9 ||
-                numberThousands != 0 -> resultThousands.append("тысяч ")
+        numberThousands % 10 == 1 && numberThousands % 100 != 11 -> resultThousands.append("тысяча ")
+        numberThousands % 10 in 2..4 && numberThousands % 100 !in 12..14 -> resultThousands.append("тысячи ")
+        numberThousands != 0 -> resultThousands.append("тысяч ")
     }
     return resultThousands.append(resultHundreds).toString().trim()
 }
