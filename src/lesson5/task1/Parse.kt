@@ -185,8 +185,8 @@ fun plusMinus(expression: String): Int {
     if (expression == "") throw IllegalArgumentException()
     if (Regex("""([^-0-9+ ])""").find(expression) != null) throw IllegalArgumentException()
     val listOfSymbols = Regex("""\s+""").split(expression)
+    if (Regex("""([0-9])""").find(listOfSymbols[0]) == null) throw IllegalArgumentException()
     if (listOfSymbols.size == 1) return listOfSymbols[0].toInt()
-    if (listOfSymbols[0] == "") throw IllegalArgumentException()
     var result = listOfSymbols[0].toInt()
     for (i in 0 until listOfSymbols.size step 2) {
         when {
