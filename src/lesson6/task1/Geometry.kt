@@ -222,8 +222,8 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
-   val center = bisectorByPoints(a,b).crossPoint(bisectorByPoints(b,c))
-    return Circle(center,center.distance(a))
+    val center = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
+    return Circle(center, center.distance(a))
 }
 
 /**
@@ -239,12 +239,16 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  */
 fun minContainingCircle(vararg points: Point): Circle {
     if (points.isEmpty()) throw IllegalArgumentException()
-    if (points.size == 1) return Circle(points[0],0.0)
-    var l = circleByDiameter(diameter( *points ))
-    for (i in 0 until points.size){
-        if (points[i].distance(l.center)>l.radius)
-            l = circleByThreePoints(diameter(*points).begin,diameter(*points).end,points[i])
+    if (points.size == 1) return Circle(points[0], 0.0)
+    val result = circleByDiameter(diameter(*points))
+    var maxDistance = result.radius
+    var resultN = circleByDiameter(diameter(*points))
+    for (i in 0 until points.size) {
+        if (points[i].distance(result.center) > maxDistance) {
+            maxDistance = points[i].distance(result.center)
+            resultN = circleByThreePoints(diameter(*points).begin, diameter(*points).end, points[i])
+        }
     }
-return l
+    return resultN
 }
 
